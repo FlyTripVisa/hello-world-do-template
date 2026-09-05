@@ -1,79 +1,56 @@
+
 {
 "$schema": "node_modules/wrangler/config-schema.json",
 "name": "hello-world-do-template",
 "main": "src/server.ts",
-"compatibility_date": "2026-09-06",
-"compatibility_flags": [
-"nodejs_compat"
-],
-​// Static Assets Binding (Serves frozen index.html and public assets)
+"compatibility_date": "2024-09-02",
+"compatibility_flags": ["nodejs_compat"],
 "assets": {
 "directory": "./public",
 "binding": "ASSETS"
 },
-​// Environment Variable Defaults
 "vars": {
-"AI_MODEL_ID": "@cf/meta/llama-3.1-8b-instruct",
+"ENVIRONMENT": "production",
 "DEFAULT_LANGUAGE": "en",
-"APP_DOMAIN": "https://flytripvisa.site"
+"AI_MODEL_ID": "@cf/meta/llama-3.1-8b-instruct"
 },
-​// Workers AI Binding
-"ai": {
-"binding": "AI"
-},
-​// D1 Relational Database Binding
 "d1_databases": [
 {
 "binding": "DB",
 "database_name": "flytripvisa-db",
-"database_id": "REPLACE_WITH_CLOUDFLARE_D1_DATABASE_ID",
-"migrations_dir": "migrations"
+"database_id": "REPLACE_WITH_D1_DATABASE_ID"
 }
 ],
-​// R2 Object Storage Binding (User docs, visa media, ads)
 "r2_buckets": [
 {
-"binding": "BUCKET",
-"bucket_name": "flytripvisa-assets"
+"binding": "STORAGE",
+"bucket_name": "flytripvisa-storage"
 }
 ],
-​// KV Namespace Binding (Caching catalog, ads, rate limits)
 "kv_namespaces": [
 {
-"binding": "KV",
-"id": "REPLACE_WITH_CLOUDFLARE_KV_NAMESPACE_ID"
+"binding": "CACHE",
+"id": "REPLACE_WITH_KV_NAMESPACE_ID"
 }
 ],
-​// Durable Objects Definitions for AI Chat & Session Management
+"ai": {
+"binding": "AI"
+},
 "durable_objects": {
 "bindings": [
 {
 "name": "AI_CHAT_SESSION",
 "class_name": "AIChatSession"
-},
-{
-"name": "USER_SESSION",
-"class_name": "UserSession"
-},
-{
-"name": "STREAM_SESSION",
-"class_name": "StreamSession"
 }
 ]
 },
-​// Durable Objects Migrations Tag
 "migrations": [
 {
 "tag": "v1",
-"new_classes": [
-"AIChatSession",
-"UserSession",
-"StreamSession"
-]
+"new_classes": ["AIChatSession"]
 }
 ],
-​"observability": {
-"enabled": true,
-"head_sampling_rate": 1
+"observability": {
+"enabled": true
 }
 }
