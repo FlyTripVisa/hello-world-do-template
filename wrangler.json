@@ -1,24 +1,79 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "hello-world-do-template",
-	"main": "src/index.ts",
-	"compatibility_date": "2025-10-08",
-	"upload_source_maps": true,
-	"migrations": [
-		{
-			"new_sqlite_classes": ["MyDurableObject"],
-			"tag": "v1"
-		}
-	],
-	"durable_objects": {
-		"bindings": [
-			{
-				"class_name": "MyDurableObject",
-				"name": "MY_DURABLE_OBJECT"
-			}
-		]
-	},
-	"observability": {
-		"enabled": true
-	}
+"$schema": "node_modules/wrangler/config-schema.json",
+"name": "hello-world-do-template",
+"main": "src/server.ts",
+"compatibility_date": "2026-09-06",
+"compatibility_flags": [
+"nodejs_compat"
+],
+​// Static Assets Binding (Serves frozen index.html and public assets)
+"assets": {
+"directory": "./public",
+"binding": "ASSETS"
+},
+​// Environment Variable Defaults
+"vars": {
+"AI_MODEL_ID": "@cf/meta/llama-3.1-8b-instruct",
+"DEFAULT_LANGUAGE": "en",
+"APP_DOMAIN": "https://flytripvisa.site"
+},
+​// Workers AI Binding
+"ai": {
+"binding": "AI"
+},
+​// D1 Relational Database Binding
+"d1_databases": [
+{
+"binding": "DB",
+"database_name": "flytripvisa-db",
+"database_id": "REPLACE_WITH_CLOUDFLARE_D1_DATABASE_ID",
+"migrations_dir": "migrations"
+}
+],
+​// R2 Object Storage Binding (User docs, visa media, ads)
+"r2_buckets": [
+{
+"binding": "BUCKET",
+"bucket_name": "flytripvisa-assets"
+}
+],
+​// KV Namespace Binding (Caching catalog, ads, rate limits)
+"kv_namespaces": [
+{
+"binding": "KV",
+"id": "REPLACE_WITH_CLOUDFLARE_KV_NAMESPACE_ID"
+}
+],
+​// Durable Objects Definitions for AI Chat & Session Management
+"durable_objects": {
+"bindings": [
+{
+"name": "AI_CHAT_SESSION",
+"class_name": "AIChatSession"
+},
+{
+"name": "USER_SESSION",
+"class_name": "UserSession"
+},
+{
+"name": "STREAM_SESSION",
+"class_name": "StreamSession"
+}
+]
+},
+​// Durable Objects Migrations Tag
+"migrations": [
+{
+"tag": "v1",
+"new_classes": [
+"AIChatSession",
+"UserSession",
+"StreamSession"
+]
+}
+],
+​"observability": {
+"enabled": true,
+"head_sampling_rate": 1
+}
 }
